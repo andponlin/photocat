@@ -12,6 +12,7 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.google.common.base.Preconditions;
 
@@ -57,7 +58,7 @@ public class JobHelper {
      * It will not return NULL.</p>
      */
 
-    public static DataType deriveDataType(File file) {
+    static DataType deriveDataType(File file) {
         Preconditions.checkArgument(null!=file, "the file must be provided");
 
         String name = file.getName();
@@ -110,16 +111,29 @@ public class JobHelper {
                 switch (deriveDataType(leaf)) {
                     case JPEG: {
                         java.util.Date leafT = null;
+                        String description = null;
 
                         try {
                             Metadata metadata = ImageMetadataReader.readMetadata(leaf);
 
                             if (null != metadata) {
-                                Directory directory = metadata.getDirectory(ExifSubIFDDirectory.class);
+                                {
+                                    Directory directory = metadata.getDirectory(ExifSubIFDDirectory.class);
 
-                                if (null != directory) {
-                                    if (directory.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL))
-                                        leafT = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+                                    if (null != directory) {
+                                        if (directory.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL))
+                                            leafT = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+                                    }
+                                }
+
+                                {
+                                    Directory directory = metadata.getDirectory(ExifIFD0Directory.class);
+
+                                    if (null != directory) {
+                                        if (directory.containsTag(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION)) {
+                                            description = directory.getString(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -140,7 +154,7 @@ public class JobHelper {
                         if (null == leafT)
                             leafT = new java.util.Date(leaf.lastModified());
 
-                        result.add(new JobSourceFile(job, UUID.randomUUID().toString(), leaf, leafT));
+                        result.add(new JobSourceFile(job, UUID.randomUUID().toString(), leaf, leafT, description));
                     }
                     break;
 
@@ -149,7 +163,8 @@ public class JobHelper {
                                 job,
                                 UUID.randomUUID().toString(),
                                 leaf,
-                                new java.util.Date(leaf.lastModified())));
+                                new java.util.Date(leaf.lastModified()),
+                                null));
                         break;
                 }
             } else {

@@ -50,19 +50,27 @@ public class JobSourceFile implements Comparable<JobSourceFile> {
 
     private String code;
 
+    /**
+     * @since 2016-09-19
+     */
+
+    private String description;
+
     protected AbstractJob job;
 
-    public JobSourceFile(
+    JobSourceFile(
             AbstractJob job,
             String code,
             File file,
-            java.util.Date timestamp) {
+            java.util.Date timestamp,
+            String description) {
         super();
 
         this.job = job;
         this.code = code;
         this.file = file;
         this.timestamp = timestamp;
+        this.description = description;
 
         thumbnailFile = null;
     }
@@ -97,6 +105,10 @@ public class JobSourceFile implements Comparable<JobSourceFile> {
 
     public String getName() {
         return getFile().getName();
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override

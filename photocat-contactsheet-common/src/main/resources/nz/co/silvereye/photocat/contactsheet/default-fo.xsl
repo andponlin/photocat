@@ -62,7 +62,16 @@
 							</xsl:choose>
 
 							<fo:block>
-								<fo:inline font-size="7pt" font-family="monospace">
+								
+								<fo:inline font-family="monospace">
+									<xsl:choose>
+										<xsl:when test="string-length($files[1]/name) > 16">
+											<xsl:attribute name="font-size">4pt</xsl:attribute>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:attribute name="font-size">7pt</xsl:attribute>
+										</xsl:otherwise>
+									</xsl:choose>
 									<xsl:value-of select="$files[1]/name" />
 								</fo:inline>
 								<xsl:if test="$files[1]/datatype = 'MOVIE'">
@@ -71,6 +80,12 @@
 									</fo:inline>
 								</xsl:if>
 							</fo:block>
+
+							<xsl:if test="$files[1]/description">
+								<fo:block font-size="4pt">
+									<xsl:value-of select="$files[1]/description" />
+								</fo:block>
+							</xsl:if>
 
 							<fo:block font-size="7pt">
 								<xsl:value-of select="$files[1]/timestamp" />

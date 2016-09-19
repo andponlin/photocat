@@ -9,8 +9,8 @@
 package nz.co.silvereye.photocat.contactsheet;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import nz.co.silvereye.photocat.*;
-import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
 import org.apache.fop.apps.*;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
@@ -142,7 +142,7 @@ class PhotoCatalogueEngine {
                         progressIndicator.updateProgress();
                     }
 
-                    jobSourceFilePreparationQueue = new ArrayBlockingQueue<Runnable>(job.getSourceFiles().size());
+                    jobSourceFilePreparationQueue = new ArrayBlockingQueue<>(job.getSourceFiles().size());
 
                     jobSourceFilePreparationExecutor = new ThreadPoolExecutor(
                             0,
@@ -158,7 +158,7 @@ class PhotoCatalogueEngine {
                     LOGGER.info("thumbnailing the {} files",job.getSourceFiles().size());
 
                     {
-                        List<Future<?>> futures = new ArrayList<Future<?>>();
+                        List<Future<?>> futures = new ArrayList<>();
                         int countDone = 0;
 
                         for (JobSourceFile jsf : job.getSourceFiles()) {
@@ -353,7 +353,7 @@ class PhotoCatalogueEngine {
     // DOM-HANDLING
     // ----------------------------------------------
 
-    protected Element assembleDocument(Job job) {
+    private Element assembleDocument(Job job) {
         SimpleDateFormat timestampF = new SimpleDateFormat(nz.co.silvereye.photocat.Constants.SIMPLEDATEFORMAT_SQL92_DATETIME);
         List<JobSourceFile> jsfs = new ArrayList<JobSourceFile>(job.getSourceFiles());
         Collections.sort(jsfs);
@@ -368,7 +368,7 @@ class PhotoCatalogueEngine {
         // now assemble the results by month.
 
         GregorianCalendar gc = new GregorianCalendar();
-        List<JobSourceFile> monthJsfs = new ArrayList<JobSourceFile>();
+        List<JobSourceFile> monthJsfs = new ArrayList<>();
         int month = -1;
         int year = -1;
 
@@ -398,7 +398,7 @@ class PhotoCatalogueEngine {
         return topE;
     }
 
-    protected Element attachElementForMonth(
+    private Element attachElementForMonth(
             Element context,
             List<JobSourceFile> monthJsfs,
             int year,
@@ -424,6 +424,12 @@ class PhotoCatalogueEngine {
             fileContainerE.addContent(fileE);
             fileContainerE.addContent(nameE);
             fileContainerE.addContent(datatypeE);
+
+            if(!Strings.isNullOrEmpty(jsf.getDescription())) {
+                Element descriptionE = new Element("description");
+                descriptionE.addContent(jsf.getDescription());
+                fileContainerE.addContent(descriptionE);
+            }
 
             if (null != jsf.getThumbnailFile()) {
                 Element thumbnailE = new Element("thumbnailurl");
