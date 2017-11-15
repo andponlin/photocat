@@ -6,7 +6,7 @@ An example of where this might be useful is in the archiving of photographs.  Fo
 
 ## Contact / Author
 
-Andrew Lindesay <apl@lindesay.co.nz> ([web](http://www.silvereye.co.nz/))
+Andrew Lindesay <apl@lindesay.co.nz> ([web](http://www.lindesay.co.nz/))
 
 ## License
 
