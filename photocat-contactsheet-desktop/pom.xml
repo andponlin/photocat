@@ -4,7 +4,7 @@
         <artifactId>photocat-parent</artifactId>
         <groupId>nz.co.silvereye</groupId>
         <relativePath>../photocat-parent</relativePath>
-        <version>1.1.2-SNAPSHOT</version>
+        <version>1.1.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
