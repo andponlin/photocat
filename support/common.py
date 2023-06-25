@@ -39,13 +39,13 @@ def scanmodules():
 
 def extractdefaultnamespace(tag):
     if "{" != tag[0]:
-        print "invalid tag missing namespace (open) ; " + tag
+        print("invalid tag missing namespace (open) ; " + tag)
         sys.exit(1)
 
     closebraceindex = tag.find("}")
 
     if -1 == closebraceindex:
-        print "invalid tag missing namespace (close) ; " + tag
+        print("invalid tag missing namespace (close) ; " + tag)
         sys.exit(1)
 
     return tag[1:closebraceindex]
@@ -58,7 +58,7 @@ def pomtoplevelelement(tree, taglocalname):
     el = roote.find("{"+namespace+"}"+taglocalname)
 
     if el is None:
-        print "unable to find the "+taglocalname+" element"
+        print("unable to find the "+taglocalname+" element")
         sys.exit(1)
 
     return el
@@ -82,7 +82,7 @@ def ensurecurrentversionconsistencyformodule(modulename, expectedversion):
     modulepomtree = etree.parse(modulename + "/pom.xml")
 
     if not modulepomtree:
-        print "the 'pom.xml' for module "+modulename+" should be accessible"
+        print("the 'pom.xml' for module "+modulename+" should be accessible")
         sys.exit(1)
 
     parente = pomtoplevelelement(modulepomtree, "parent")
@@ -90,16 +90,16 @@ def ensurecurrentversionconsistencyformodule(modulename, expectedversion):
     versione = parente.find("{"+namespace+"}version")
 
     if versione is None:
-        print "the parent element of module " + modulename + " has no version specified"
+        print("the parent element of module " + modulename + " has no version specified")
         sys.exit(1)
     else:
         actualversion = versione.text
 
         if actualversion != expectedversion:
-            print "the version of the module "+modulename+" is inconsistent with the expected; " + actualversion
+            print("the version of the module "+modulename+" is inconsistent with the expected; " + actualversion)
             sys.exit(1)
         else:
-            print modulename + ": " + actualversion + " (ok)"
+            print(modulename + ": " + actualversion + " (ok)")
 
 
 # =====================================
@@ -108,13 +108,13 @@ def ensurecurrentversionconsistencyformodule(modulename, expectedversion):
 def gitaddpomformodule(modulename):
     if modulename is None:
         if 0 == subprocess.call(["git", "add", "pom.xml"]):
-            print "pom.xml: (added)"
+            print("pom.xml: (added)")
         else:
-            print "failed to git-add; pom.xml"
+            print("failed to git-add; pom.xml")
             sys.exit(1)
     else:
         if 0 == subprocess.call(["git", "add", modulename + "/pom.xml"]):
-            print modulename + "/pom.xml: (added)"
+            print(modulename + "/pom.xml: (added)")
         else:
             print("failed to git-add; "+modulename+"/pom.xml")
             sys.exit(1)
