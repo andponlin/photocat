@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Andrew Lindesay. All Rights Reserved.
+ * Copyright 2016-2023, Andrew Lindesay. All Rights Reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -10,7 +10,6 @@ package nz.co.silvereye.photocat;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
-import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
@@ -41,7 +40,7 @@ public class JobHelper {
         JPEG(new String[]{"jpeg", "jpg"}),
         MOVIE(new String[]{"avi", "mpeg", "mov", "ogg"});
 
-        protected String[] extensions;
+        final String[] extensions;
 
         DataType(String[] extensions) {
             this.extensions = extensions;
@@ -109,7 +108,7 @@ public class JobHelper {
             if (leaf.isFile() && ('.' != leaf.getName().charAt(0))) // linux puts '.' in front of hidden files
             {
                 switch (deriveDataType(leaf)) {
-                    case JPEG: {
+                    case JPEG -> {
                         java.util.Date leafT = null;
                         String description = null;
 
@@ -117,34 +116,26 @@ public class JobHelper {
                             Metadata metadata = ImageMetadataReader.readMetadata(leaf);
 
                             if (null != metadata) {
-                                {
-                                    Directory directory = metadata.getDirectory(ExifSubIFDDirectory.class);
-
-                                    if (null != directory) {
-                                        if (directory.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL))
-                                            leafT = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-                                    }
-                                }
-
-                                {
-                                    Directory directory = metadata.getDirectory(ExifIFD0Directory.class);
-
-                                    if (null != directory) {
-                                        if (directory.containsTag(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION)) {
-                                            description = directory.getString(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION);
-                                        }
-                                    }
-                                }
+                                leafT = metadata.getDirectoriesOfType(ExifSubIFDDirectory.class)
+                                        .stream()
+                                        .filter(d -> d.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL))
+                                        .findFirst()
+                                        .map(d -> d.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL))
+                                        .orElse(leafT);
+                                description = metadata.getDirectoriesOfType(ExifIFD0Directory.class)
+                                        .stream()
+                                        .filter(d -> d.containsTag(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION))
+                                        .findFirst()
+                                        .map(d -> d.getString(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION))
+                                        .orElse(description);
                             }
-                        }
-                        catch(IOException ioe) {
+                        } catch (IOException ioe) {
                             Logger logger = Logger.getLogger(Constants.LOGGER);
 
-                            if(logger.isLoggable(Level.WARNING)) {
+                            if (logger.isLoggable(Level.WARNING)) {
                                 logger.log(Level.WARNING, "unable to read the meta data on the file; " + leaf, ioe);
                             }
-                        }
-                        catch (ImageProcessingException ipe) {
+                        } catch (ImageProcessingException ipe) {
                             Logger logger = Logger.getLogger(Constants.LOGGER);
 
                             if (logger.isLoggable(Level.WARNING))
@@ -156,16 +147,12 @@ public class JobHelper {
 
                         result.add(new JobSourceFile(job, UUID.randomUUID().toString(), leaf, leafT, description));
                     }
-                    break;
-
-                    case MOVIE:
-                        result.add(new JobSourceFile(
-                                job,
-                                UUID.randomUUID().toString(),
-                                leaf,
-                                new java.util.Date(leaf.lastModified()),
-                                null));
-                        break;
+                    case MOVIE -> result.add(new JobSourceFile(
+                            job,
+                            UUID.randomUUID().toString(),
+                            leaf,
+                            new java.util.Date(leaf.lastModified()),
+                            null));
                 }
             } else {
                 assembleJobSourceFiles(

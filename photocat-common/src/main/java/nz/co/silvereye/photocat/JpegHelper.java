@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Andrew Lindesay. All Rights Reserved.
+ * Copyright 2016-2023, Andrew Lindesay. All Rights Reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -59,22 +59,10 @@ public class JpegHelper {
         if ((segmentMarker & 0xFF00) != 0xFF00)
             throw new IOException("bad segment marker; all segment markers should start with 0xFF");
 
-        boolean writeSegment = true;
-
-        switch (segmentMarker) {
-            case 0xFFE0:
-            case 0xFFE1:
-            case 0xFFE2:
-            case 0xFFE3:
-            case 0xFFE4:
-            case 0xFFE5:
-            case 0xFFE6:
-            case 0xFFE7:
-            case 0xFFE8:
-            case 0xFFE9:
-                writeSegment = false;
-                break;
-        }
+        boolean writeSegment = switch (segmentMarker) {
+            case 0xFFE0, 0xFFE1, 0xFFE2, 0xFFE3, 0xFFE4, 0xFFE5, 0xFFE6, 0xFFE7, 0xFFE8, 0xFFE9 -> false;
+            default -> true;
+        };
 
         if (writeSegment) {
             write16(segmentMarker, os);

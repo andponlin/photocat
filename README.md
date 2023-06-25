@@ -17,7 +17,7 @@ Please see the LICENSE.TXT file for the license that governs the use of this sof
 To build this software, you will need the following;
 
 * An internet connection
-* Java 8
+* Java 17
 * Apache Maven
 
 To build;

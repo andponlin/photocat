@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Andrew Lindesay. All Rights Reserved.
+ * Copyright 2016-2023, Andrew Lindesay. All Rights Reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -22,7 +22,7 @@ public class PhasedProgress {
 
     private int phase = 0;
     private int percentageInPhase = 0;
-    private int[] weights;
+    private final int[] weights;
 
     public PhasedProgress(int[] weights) {
         Preconditions.checkArgument(null!=weights, "weights must be provided");

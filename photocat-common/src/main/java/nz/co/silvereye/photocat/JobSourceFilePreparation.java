@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Andrew Lindesay. All Rights Reserved.
+ * Copyright 2016-2023, Andrew Lindesay. All Rights Reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -28,9 +28,9 @@ import java.io.*;
 
 public class JobSourceFilePreparation implements Runnable {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(JobSourceFilePreparation.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobSourceFilePreparation.class);
 
-    private JobSourceFile jobSourceFile = null;
+    private final JobSourceFile jobSourceFile;
 
     public JobSourceFilePreparation(JobSourceFile jobSourceFile) {
         Preconditions.checkArgument(null!=jobSourceFile, "the job source file must be provided");
@@ -43,12 +43,8 @@ public class JobSourceFilePreparation implements Runnable {
         Preconditions.checkNotNull(outputStream);
 
         switch (JobHelper.deriveDataType(jobSourceFile.getFile())) {
-            case JPEG:
-                createThumbnailJpeg(outputStream);
-                break;
-            case MOVIE:
-                createThumbnailMovie(outputStream);
-                break;
+            case JPEG -> createThumbnailJpeg(outputStream);
+            case MOVIE -> createThumbnailMovie(outputStream);
         }
     }
 
@@ -101,7 +97,9 @@ public class JobSourceFilePreparation implements Runnable {
         } finally {
             if(null!=frameTempFile) {
                 if (frameTempFile.exists()) {
-                    frameTempFile.delete();
+                    if (!frameTempFile.delete()) {
+                        LOGGER.error("the file [{}] was unable to be deleted", frameTempFile);
+                    }
                 }
             }
         }

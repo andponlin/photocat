@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Andrew Lindesay. All Rights Reserved.
+ * Copyright 2016-2023, Andrew Lindesay. All Rights Reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -28,7 +28,7 @@ public class JobSourceFile implements Comparable<JobSourceFile> {
      * example.</p>
      */
 
-    private File file;
+    private final File file;
 
     /**
      * <p>This file is a pointer to a thumbnail that has been generated
@@ -42,19 +42,19 @@ public class JobSourceFile implements Comparable<JobSourceFile> {
      * even be looking at the timestamp of the file itself.</p>
      */
 
-    private java.util.Date timestamp;
+    private final java.util.Date timestamp;
 
     /**
      * <p>This code can be used to uniquely identify the source file.</p>
      */
 
-    private String code;
+    private final String code;
 
     /**
      * @since 2016-09-19
      */
 
-    private String description;
+    private final String description;
 
     protected AbstractJob job;
 
@@ -120,11 +120,7 @@ public class JobSourceFile implements Comparable<JobSourceFile> {
 
     public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.SIMPLEDATEFORMAT_SQL92_DATETIME);
-        @SuppressWarnings("StringBufferReplaceableByString") StringBuffer sb = new StringBuffer();
-        sb.append(sdf.format(getTimestamp()));
-        sb.append(" : ");
-        sb.append(getFile().getAbsolutePath());
-        return sb.toString();
+        return sdf.format(getTimestamp()) + " : " + getFile().getAbsolutePath();
     }
 
     // ----------------------------------------------

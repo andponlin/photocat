@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Andrew Lindesay. All Rights Reserved.
+ * Copyright 2016-2023, Andrew Lindesay. All Rights Reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -12,9 +12,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import nz.co.silvereye.photocat.*;
 import org.apache.fop.apps.*;
-import org.jdom.Element;
-import org.jdom.output.XMLOutputter;
-import org.jdom.transform.JDOMSource;
+import org.jdom2.Element;
+import org.jdom2.output.XMLOutputter;
+import org.jdom2.transform.JDOMSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,9 +49,9 @@ import java.util.concurrent.*;
 
 class PhotoCatalogueEngine {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(PhotoCatalogueEngine.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PhotoCatalogueEngine.class);
 
-    private DateFormat timestampFormat = new SimpleDateFormat(nz.co.silvereye.photocat.Constants.SIMPLEDATEFORMAT_SQL92_DATETIME);
+    private final DateFormat timestampFormat = new SimpleDateFormat(nz.co.silvereye.photocat.Constants.SIMPLEDATEFORMAT_SQL92_DATETIME);
 
     public PhotoCatalogueEngine() {
         super();
@@ -93,7 +93,7 @@ class PhotoCatalogueEngine {
 
     public synchronized void run(
             Job job,
-            ProgressIndicatorInterface progressIndicator) throws Exception {
+            ProgressIndicatorInterface progressIndicator) {
 
         Preconditions.checkNotNull(job);
 
@@ -315,7 +315,9 @@ class PhotoCatalogueEngine {
 
                 for (JobSourceFile jsf : job.getSourceFiles()) {
                     if (null != jsf.getThumbnailFile())
-                        jsf.getThumbnailFile().delete();
+                        if (!jsf.getThumbnailFile().delete()) {
+                            LOGGER.error("unable to delete file [{}]", jsf.getThumbnailFile());
+                        }
                 }
 
                 // shutdown the executor.

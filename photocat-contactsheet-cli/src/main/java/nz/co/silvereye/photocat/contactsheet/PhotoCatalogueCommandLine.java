@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Andrew Lindesay. All Rights Reserved.
+ * Copyright 2016-2023, Andrew Lindesay. All Rights Reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -57,7 +57,7 @@ public class PhotoCatalogueCommandLine implements Runnable {
         System.exit(1);
     }
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String args[]) {
 
         // initialize the logging using SLF4J
         // http://www.slf4j.org/legacy.html#jul-to-slf4j

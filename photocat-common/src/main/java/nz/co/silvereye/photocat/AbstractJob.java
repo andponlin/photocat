@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Andrew Lindesay. All Rights Reserved.
+ * Copyright 2016-2023, Andrew Lindesay. All Rights Reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -59,7 +59,7 @@ public abstract class AbstractJob {
      * <p>These are the source files for the job.</p>
      */
 
-    private Map<String, JobSourceFile> sourceFiles = new HashMap<>();
+    private final Map<String, JobSourceFile> sourceFiles = new HashMap<>();
 
     // These member variables are thread-safe and are intended
     // to be used for managing the state of the job.

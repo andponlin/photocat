@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Andrew Lindesay. All Rights Reserved.
+ * Copyright 2016-2023, Andrew Lindesay. All Rights Reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -29,7 +29,7 @@ import java.util.ResourceBundle;
 
 public class PhotoCatalogueDesktop {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(JobSpecificationFrame.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobSpecificationFrame.class);
 
     private static PhotoCatalogueDesktop sharedInstance = null;
 
@@ -103,8 +103,8 @@ public class PhotoCatalogueDesktop {
      */
 
     private static class JobAndProgress implements Runnable {
-        private Job job;
-        private ProgressIndicatorInterface progressIndicator;
+        private final Job job;
+        private final ProgressIndicatorInterface progressIndicator;
 
         private JobAndProgress(
                 Job job,
