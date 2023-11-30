@@ -9,13 +9,9 @@
 package nz.co.silvereye.photocat.contactsheet;
 
 import nz.co.silvereye.photocat.AbstractJob;
-import nz.co.silvereye.photocat.JobSourceFile;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>This class represents a job which is to be run.  It

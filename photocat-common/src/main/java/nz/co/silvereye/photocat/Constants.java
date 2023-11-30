@@ -14,6 +14,6 @@ public class Constants {
 
     public final static String LOGGER = "nz.co.silvereye.photocat";
 
-    public final static String PATHDEFAULT_FFMPEG = "/usr/local/bin/ffmpeg";
+    public final static String PATHDEFAULT_FFMPEG = "/usr/bin/ffmpeg";
 
 }

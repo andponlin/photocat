@@ -146,10 +146,6 @@ public abstract class AbstractJob {
         return sourceFiles.values();
     }
 
-    public JobSourceFile getSourceFile(String code) {
-        return sourceFiles.get(code);
-    }
-
     public int getMaximumWidthOrHeightPixels() {
         return maximumWidthOrHeightPixels;
     }

@@ -16,18 +16,20 @@ import nz.co.silvereye.photocat.contactsheet.PhotoCatalogueDesktop;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.Serial;
 
 public class ProgressDialog extends JDialog implements ProgressIndicatorInterface {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static ProgressDialog sharedInstance = null;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private JPanel contentPane;
-    private JLabel statusLabel;
-    private JProgressBar progressBar;
-    private JButton cancelButton;
+    private final JPanel contentPane;
+    private final JLabel statusLabel;
+    private final JProgressBar progressBar;
+    private final JButton cancelButton;
 
     private Job job = null;
 

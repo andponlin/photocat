@@ -113,9 +113,7 @@ public class JpegHelper {
                     throw new IOException("premature end of stream when reading a JPEG SOS segment.");
                 }
 
-                if (writeSegment) {
-                    os.write(c);
-                }
+                os.write(c);
 
                 if (0xFF == c) {
                     c = is.read();
@@ -124,9 +122,7 @@ public class JpegHelper {
                         throw new IOException("premature end of stream when reading a JPEG SOS segment.");
                     }
 
-                    if (writeSegment) {
-                        os.write(c);
-                    }
+                    os.write(c);
 
                     if (0x00 != c) {
                         if ((c < 0xD0) || (c > 0xD7)) {

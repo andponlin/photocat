@@ -123,7 +123,7 @@ class PhotoCatalogueEngine {
                     throw new Exception("the FO transform has not been configured.");
                 }
 
-                if (0 == job.getSourceFiles().size()) {
+                if (job.getSourceFiles().isEmpty()) {
                     throw new Exception("there are no files supplied to render the page for.");
                 }
             }
@@ -400,7 +400,7 @@ class PhotoCatalogueEngine {
         return topE;
     }
 
-    private Element attachElementForMonth(
+    private void attachElementForMonth(
             Element context,
             List<JobSourceFile> monthJsfs,
             int year,
@@ -450,7 +450,6 @@ class PhotoCatalogueEngine {
 
         context.addContent(sectionE);
 
-        return sectionE;
     }
 
 }

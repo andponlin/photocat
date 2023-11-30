@@ -22,6 +22,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.Serial;
 import java.net.MalformedURLException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -33,23 +34,24 @@ import java.util.prefs.Preferences;
 
 public class JobSpecificationFrame extends JFrame implements ActionListener {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(JobSpecificationFrame.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobSpecificationFrame.class);
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static JobSpecificationFrame sharedInstance = null;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private JPanel contentPanel;
-    private JTextField sourceDirectoryTextField;
-    private JTextField pdfOutputFileTextField;
-    private JTextField xmlOutputFileTextField;
-    private JTextField ffmpegBinaryFileTextField;
-    private JTextField customTemplateTextField;
-    private JTextField maximumWidthOrHeightPixelsTextField;
-    private JButton generatePdfButton;
-    private JRadioButton defaultOutputTemplateRadio;
-    private JRadioButton customTemplateRadio;
+    private final JPanel contentPanel;
+    private final JTextField sourceDirectoryTextField;
+    private final JTextField pdfOutputFileTextField;
+    private final JTextField xmlOutputFileTextField;
+    private final JTextField ffmpegBinaryFileTextField;
+    private final JTextField customTemplateTextField;
+    private final JTextField maximumWidthOrHeightPixelsTextField;
+    private final JButton generatePdfButton;
+    private final JRadioButton defaultOutputTemplateRadio;
+    private final JRadioButton customTemplateRadio;
 
     public static JobSpecificationFrame singleton() {
         if (null == sharedInstance)
@@ -336,7 +338,7 @@ public class JobSpecificationFrame extends JFrame implements ActionListener {
         customTemplateTextField.setText(prefs.get(Constants.KEY_CONFIG_CUSTOMTEMPLATEFILE, ""));
         maximumWidthOrHeightPixelsTextField.setText(prefs.get(Constants.KEY_CONFIG_MAXIMUMWIDTHORHEIGHTPIXELS, Integer.toString(Constants.DEFAULT_MAXIMUMWIDTHORHEIGHTPIXELS)));
 
-        if (Boolean.valueOf(prefs.get(Constants.KEY_CONFIG_USECUSTOMTEMPLATEFILEFLAG, Boolean.FALSE.toString()))) {
+        if (Boolean.parseBoolean(prefs.get(Constants.KEY_CONFIG_USECUSTOMTEMPLATEFILEFLAG, Boolean.FALSE.toString()))) {
             defaultOutputTemplateRadio.setSelected(false);
             customTemplateRadio.setSelected(true);
         } else {
@@ -346,7 +348,7 @@ public class JobSpecificationFrame extends JFrame implements ActionListener {
 
         // if there is an obvious ffmpeg binary present then use it.
 
-        if (0 == ffmpegBinaryFileTextField.getText().length()) {
+        if (ffmpegBinaryFileTextField.getText().isEmpty()) {
             File proposedFfmpegBinaryFile = new File(nz.co.silvereye.photocat.Constants.PATHDEFAULT_FFMPEG);
 
             if (proposedFfmpegBinaryFile.exists())
@@ -367,7 +369,7 @@ public class JobSpecificationFrame extends JFrame implements ActionListener {
             String maximumWidthOrHeightPixelsS = maximumWidthOrHeightPixelsTextField.getText().trim();
             int maximumWidthOrHeightPixels = -1;
 
-            if (0 != maximumWidthOrHeightPixelsS.length()) {
+            if (!maximumWidthOrHeightPixelsS.isEmpty()) {
                 try {
                     maximumWidthOrHeightPixels = Integer.parseInt(maximumWidthOrHeightPixelsS);
                 } catch (NumberFormatException nfe) { /* ignore */ }
@@ -390,7 +392,7 @@ public class JobSpecificationFrame extends JFrame implements ActionListener {
             String sourceDirectoryS = sourceDirectoryTextField.getText().trim();
             File sourceDirectory = null;
 
-            if (0 != sourceDirectoryS.length())
+            if (!sourceDirectoryS.isEmpty())
                 sourceDirectory = new File(sourceDirectoryS);
 
             if ((null == sourceDirectory) || !sourceDirectory.exists() || !sourceDirectory.isDirectory() || (0 == sourceDirectory.list().length)) {
@@ -407,7 +409,7 @@ public class JobSpecificationFrame extends JFrame implements ActionListener {
             String pdfOutputFileS = pdfOutputFileTextField.getText().trim();
             File pdfOutputFile = null;
 
-            if (0 != pdfOutputFileS.length())
+            if (!pdfOutputFileS.isEmpty())
                 pdfOutputFile = new File(pdfOutputFileS);
 
             if (null == pdfOutputFile) {
@@ -424,7 +426,7 @@ public class JobSpecificationFrame extends JFrame implements ActionListener {
             String xmlOutputFileS = xmlOutputFileTextField.getText().trim();
             File xmlOutputFile = null;
 
-            if (0 != xmlOutputFileS.length())
+            if (!xmlOutputFileS.isEmpty())
                 xmlOutputFile = new File(xmlOutputFileS);
 
             // check the FFMPEG file - optional
@@ -432,7 +434,7 @@ public class JobSpecificationFrame extends JFrame implements ActionListener {
             String ffmpegBinaryFileS = ffmpegBinaryFileTextField.getText().trim();
             File ffmpegBinaryFile = null;
 
-            if (0 != ffmpegBinaryFileS.length())
+            if (!ffmpegBinaryFileS.isEmpty())
                 ffmpegBinaryFile = new File(ffmpegBinaryFileS);
 
             if (null != ffmpegBinaryFile) {
@@ -453,7 +455,7 @@ public class JobSpecificationFrame extends JFrame implements ActionListener {
             if (customTemplateRadio.isSelected()) {
                 String customTemplateS = customTemplateTextField.getText().trim();
 
-                if (0 != customTemplateS.length())
+                if (!customTemplateS.isEmpty())
                     customTemplate = new File(customTemplateS);
 
                 if ((null == customTemplate) || !customTemplate.exists() || !customTemplate.isFile()) {
@@ -498,7 +500,7 @@ public class JobSpecificationFrame extends JFrame implements ActionListener {
 
                 job.addSourceFiles(JobHelper.assembleJobSourceFiles(job));
 
-                if (0 == job.getSourceFiles().size()) {
+                if (job.getSourceFiles().isEmpty()) {
                     validationFailed = true;
                     JOptionPane.showMessageDialog(
                             null,

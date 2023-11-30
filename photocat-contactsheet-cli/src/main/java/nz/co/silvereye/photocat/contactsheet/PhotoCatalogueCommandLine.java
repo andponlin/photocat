@@ -29,7 +29,7 @@ import java.util.logging.LogManager;
 
 public class PhotoCatalogueCommandLine implements Runnable {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(PhotoCatalogueCommandLine.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PhotoCatalogueCommandLine.class);
 
     @Option(name = "-o", usage = "Output file for PDF data")
     private File outputPdfFile ;
